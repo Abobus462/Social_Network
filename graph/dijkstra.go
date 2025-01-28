@@ -4,13 +4,17 @@ import (
 	"math"
 )
 
-func Dijkstra(graph Graph, start int) map[int]int {
+func Dijkstra(graph Graph, start int) (map[int]int, map[int]int) {
 	// Создаём таблицу расстояний, изначально все - "бесконечность"
 	distances := make(map[int]int)
-	for i := range graph.Adj {
-		distances[i] = math.MaxInt32
+	for _, edge := range graph.Edge {
+		distances[edge.U] = math.MaxInt32
+		distances[edge.V] = math.MaxInt32
 	}
 	distances[start] = 0 // Начальная вершина
+
+	// Массив для восстановления пути
+	prev := make(map[int]int)
 
 	// Очередь с приоритетом
 	pq := NewPriorityQueue()
@@ -29,14 +33,15 @@ func Dijkstra(graph Graph, start int) map[int]int {
 		}
 
 		// Обновляем расстояния до соседей
-		for _, edge := range graph.GetNeighbors() {
+		for _, edge := range graph.GetNeighbors(currentNode) {
 			newDistance := currentDistance + edge.W
-			if newDistance < distances[edge.v] {
-				distances[edge.to] = newDistance
-				pq.Push(edge.v, newDistance)
+			if newDistance < distances[edge.V] {
+				distances[edge.V] = newDistance
+				prev[edge.V] = currentNode
+				pq.Push(edge.V, newDistance)
 			}
 		}
 	}
 
-	return distances
+	return distances, prev
 }

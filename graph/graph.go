@@ -59,6 +59,20 @@ func ConnectedComponents(g *Graph) (count int, comp map[int]int) {
 	return count, comp
 }
 
+func (g *Graph) GetNeighbors(u int) []struct{ V, W int } {
+	var neighbors []struct{ V, W int }
+
+	for _, v := range g.Adj[u] {
+		for _, edge := range g.Edge {
+			if (edge.U == u && edge.V == v) || (edge.U == v && edge.V == u) {
+				neighbors = append(neighbors, struct{ V, W int }{V: v, W: edge.W})
+				break
+			}
+		}
+	}
+	return neighbors
+}
+
 // ?????????????????????????????????????????????????????????
 func (g *Graph) GetAllEdges() []Edge {
 	var edges []Edge
