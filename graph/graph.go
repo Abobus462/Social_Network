@@ -41,20 +41,17 @@ func HasEdge(g *Graph, u, v int) bool {
 }
 
 func ConnectedComponents(g *Graph) (count int, comp map[int]int) {
-	visited := make(map[int]bool) // Для отслеживания посещённых узлов
-	comp = make(map[int]int)      // Для хранения компонент связности
-	count = 0                     // Счётчик компонент связности
+	visited := make(map[int]bool)
+	comp = make(map[int]int)
+	count = 0
 
-	// Перебираем все узлы графа
 	for key := range g.Adj {
 		if !visited[key] {
-			count++ // Новая компонента связности
-			// Получаем все узлы компоненты с помощью DFS
+			count++
 			component := DFS(g, key)
-			// Обрабатываем все узлы из компоненты
 			for _, value := range component {
-				visited[value] = true // Помечаем узел как посещённый
-				comp[value] = count   // Присваиваем номер компоненты
+				visited[value] = true
+				comp[value] = count
 			}
 		}
 	}
@@ -62,18 +59,13 @@ func ConnectedComponents(g *Graph) (count int, comp map[int]int) {
 	return count, comp
 }
 
+// ?????????????????????????????????????????????????????????
 func (g *Graph) GetAllEdges() []Edge {
 	var edges []Edge
-	// Перебираем каждую вершину
 	for u, neighbors := range g.Adj {
-		// Для каждого соседа вершины u
 		for _, v := range neighbors {
-			// Если u < v, добавляем ребро (u, v), иначе пропускаем
 			if u < v {
-				// Мы добавляем информацию о весе ребра. Допустим, что веса уже хранятся в g.Edge.
-				// Но если вес не был добавлен, то его можно добавить вручную при формировании ребра
-				var weight int // Вес можно добавить, если информация о весах имеется
-				// Пример: поиск веса ребра между u и v
+				var weight int
 				for _, edge := range g.Edge {
 					if (edge.U == u && edge.V == v) || (edge.U == v && edge.V == u) {
 						weight = edge.W
